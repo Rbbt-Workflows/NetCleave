@@ -4,5 +4,5 @@ numpy
 matplotlib
 pathlib
 sklearn
-keras
 biopython
+keras
