@@ -12,8 +12,10 @@ module NetCleave
 
   # Add binary, decompress models
   Rbbt.claim Rbbt.software.opt.NetCleave, :install do
-    {:git => "https://github.com/BSC-CNS-EAPM/NetCleave.git"}
+    {:git => "https://github.com/BSC-CNS-EAPM/NetCleave.git", :commands => "chmod +x $OPT_DIR/NetCleave/NetCleave.py"}
   end
+
+  CMD.tool "NetCleave.py", Rbbt.software.opt.NetCleave
 
   input :fasta, :text, "FASTA file", nil, :required => true
   task :predict_fasta => :tsv do |fasta|
@@ -23,7 +25,7 @@ module NetCleave
     Open.write(fasta_file, fasta)
 
     Misc.in_dir files_dir do
-      CMD.cmd(Rbbt.software.opt.NetCleave["NetCleave.py"].find, "--predict #{fasta_file} --pred_input 1")
+      CMD.cmd(Rbbt.software.opt.NetCleave["NetCleave.py"].produce.find, "--predict #{fasta_file} --pred_input 1")
     end
 
     file = Dir.glob(File.join(files_dir, 'output/*.csv')).first
@@ -49,7 +51,7 @@ module NetCleave
     Open.write(input_csv, str)
 
     Misc.in_dir files_dir do
-      CMD.cmd(Rbbt.software.opt.NetCleave["NetCleave.py"].find, "--predict #{input_csv} --pred_input 2")
+      CMD.cmd(Rbbt.software.opt.NetCleave["NetCleave.py"].produce.find, "--predict #{input_csv} --pred_input 2")
     end
 
     file = Dir.glob(File.join(files_dir, 'output/*.csv')).first
@@ -70,7 +72,7 @@ module NetCleave
     Open.write(input_csv, csv)
 
     Misc.in_dir files_dir do
-      CMD.cmd(Rbbt.software.opt.NetCleave["NetCleave.py"].find, "--predict #{input_csv} --pred_input 3")
+      CMD.cmd(Rbbt.software.opt.NetCleave["NetCleave.py"].produce.find, "--predict #{input_csv} --pred_input 3")
     end
 
     file = Dir.glob(File.join(files_dir, 'output/*.csv')).first
