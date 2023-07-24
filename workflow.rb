@@ -25,7 +25,7 @@ module NetCleave
     Open.write(fasta_file, fasta)
 
     Misc.in_dir files_dir do
-      CMD.cmd(Rbbt.software.opt.NetCleave.produce["NetCleave.py"].find, "--predict #{fasta_file} --pred_input 1")
+      CMD.cmd("python #{Rbbt.software.opt.NetCleave.produce["NetCleave.py"].find} --predict #{fasta_file} --pred_input 1")
     end
 
     file = Dir.glob(File.join(files_dir, 'output/*.csv')).first
@@ -51,7 +51,7 @@ module NetCleave
     Open.write(input_csv, str)
 
     Misc.in_dir files_dir do
-      CMD.cmd(Rbbt.software.opt.NetCleave.produce["NetCleave.py"].find, "--predict #{input_csv} --pred_input 2")
+      CMD.cmd("python #{Rbbt.software.opt.NetCleave.produce["NetCleave.py"].find} --predict #{input_csv} --pred_input 2")
     end
 
     file = Dir.glob(File.join(files_dir, 'output/*.csv')).first
@@ -72,7 +72,7 @@ module NetCleave
     Open.write(input_csv, csv)
 
     Misc.in_dir files_dir do
-      CMD.cmd(Rbbt.software.opt.NetCleave.produce["NetCleave.py"].find, "--predict #{input_csv} --pred_input 3")
+      CMD.cmd("python #{Rbbt.software.opt.NetCleave.produce["NetCleave.py"].find} --predict #{input_csv} --pred_input 3")
     end
 
     file = Dir.glob(File.join(files_dir, 'output/*.csv')).first
