@@ -1,0 +1,9 @@
+argparse
+pandas
+numpy
+matplotlib
+pathlib
+sklearn
+keras
+tensorflow
+biopython
