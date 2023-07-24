@@ -3,6 +3,6 @@ pandas
 numpy
 matplotlib
 pathlib
-sklearn
 biopython
+scikit-learn
 keras
