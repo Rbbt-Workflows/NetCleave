@@ -1,0 +1,85 @@
+From fb418b6459f351ce64457fa920bf1dd3b8de100f Mon Sep 17 00:00:00 2001
+From: Miguel Vazquez <miguel.vazquez.g@bsc.es>
+Date: Thu, 6 Jul 2023 10:49:46 +0200
+Subject: [PATCH] Avoid need to execute from installation directory
+
+---
+ NetCleave.py                         | 9 ++++++---
+ predictor/ml_main/run_NN.py          | 4 +++-
+ predictor/predictions/predict_csv.py | 5 ++++-
+ 3 files changed, 13 insertions(+), 5 deletions(-)
+ mode change 100644 => 100755 NetCleave.py
+
+diff --git a/NetCleave.py b/NetCleave.py
+old mode 100644
+new mode 100755
+index c768339..5be83d7
+--- a/NetCleave.py
++++ b/NetCleave.py
+@@ -1,3 +1,4 @@
++#!/bin/env python
+ import argparse
+ import os
+ from predictor.database_functions import peptide_extractor, uniprot_extractor, uniparc_extractor
+@@ -138,14 +139,16 @@ def main(generate=False, train=False, predict=False):
+     ------------------------------------------------------------
+     """
+ 
++    script_dir = os.path.dirname(os.path.realpath(__file__))
++
+     if data_path!= 'None':
+         training_data_path = data_path
+     else:
+-        training_data_path = 'data/training_data/{}_{}_{}'.format(mhc_class, technique.replace(' ', '-'), mhc_allele)
++        training_data_path = os.path.join(script_dir, 'data/training_data/{}_{}_{}'.format(mhc_class, technique.replace(' ', '-'), mhc_allele))
+     if model_path!= 'None':
+         models_export_path = model_path
+     else:
+-        models_export_path = 'data/models/{}_{}_{}'.format(mhc_class, technique.replace(' ', '-'), mhc_allele)
++        models_export_path = os.path.join(script_dir, 'data/models/{}_{}_{}'.format(mhc_class, technique.replace(' ', '-'), mhc_allele))
+ 
+     if not any([generate, train, predict]):
+         print('Please, provide an argument. See python3 NetCleave.py -h for more information')
+@@ -214,7 +217,7 @@ def main(generate=False, train=False, predict=False):
+                 predict_csv.score_set(outfile, models_export_path, 'ABC')
+ 
+         if pred_input==2: # predict csv file with uniprot id
+-            uniprot_path = 'data/databases/uniprot/uniprot_sprot.fasta'
++            uniprot_path = os.path.join(script_dir, 'data/databases/uniprot/uniprot_sprot.fasta')
+             uniprot_data = uniprot_extractor.extract_uniprot_data(uniprot_path)
+             outfile = cleavage_site_generator.generateCleavageSitesUniprot(predict,uniprot_data)
+             predict_csv.score_set(outfile, models_export_path, 'ABC',uniprot=True)
+diff --git a/predictor/ml_main/run_NN.py b/predictor/ml_main/run_NN.py
+index a38e411..2648048 100644
+--- a/predictor/ml_main/run_NN.py
++++ b/predictor/ml_main/run_NN.py
+@@ -143,7 +143,9 @@ def create_models(training_data_path, model_path):
+     peptide_lenght = 7
+     sequence_table, class_table = read_data_table(training_data_path)
+ 
+-    descriptors_path = "predictor/ml_main/QSAR_table.csv"
++    script_dir = os.path.dirname(os.path.realpath(__file__))
++
++    descriptors_path = os.path.join(script_dir, "QSAR_table.csv")
+     df_descriptors = read_descriptors_table(descriptors_path)
+ 
+     encode_data = encode_sequence_data(sequence_table, df_descriptors)
+diff --git a/predictor/predictions/predict_csv.py b/predictor/predictions/predict_csv.py
+index cf3fbfb..f244e9e 100644
+--- a/predictor/predictions/predict_csv.py
++++ b/predictor/predictions/predict_csv.py
+@@ -55,7 +55,10 @@ def read_data_table(path):
+ 
+ def read_descriptors_table():
+     print("---> Reading descriptors...")
+-    path = "predictor/ml_main/QSAR_table.csv"
++
++    script_dir = os.path.dirname(os.path.realpath(__file__))
++    path = os.path.join(script_dir, "../ml_main/QSAR_table.csv")
++
+     df = pd.read_csv(path, sep=",", header=0, index_col=0)
+     scaler = StandardScaler()
+     scaled_data = scaler.fit_transform(df)
+-- 
+2.34.1
+

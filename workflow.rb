@@ -12,7 +12,8 @@ module NetCleave
 
   # Add binary, decompress models
   Rbbt.claim Rbbt.software.opt.NetCleave, :install do
-    {:git => "https://github.com/BSC-CNS-EAPM/NetCleave.git", :commands => "chmod +x $OPT_DIR/NetCleave/NetCleave.py"}
+    {:git => "https://github.com/BSC-CNS-EAPM/NetCleave.git",
+     :commands => "(cd $OPT_DIR/NetCleave/; git apply #{Rbbt.share["NetCleave.patch"].find}"}
   end
 
   CMD.tool "NetCleave.py", Rbbt.software.opt.NetCleave
