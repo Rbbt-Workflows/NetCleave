@@ -86,6 +86,10 @@ module NetCleave
     tsv
   end
 
+  export :predict_fasta
+  export :predict_uniprot
+  export :predict_custom
+
 end
 
 #require 'NetCleave/tasks/basic.rb'
